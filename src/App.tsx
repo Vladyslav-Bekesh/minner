@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import "./App.css";
 
 const MINE = -1;
@@ -20,10 +20,20 @@ const mapMaskToView: Record<number, React.ReactNode> = {
 function App() {
   const size = 10;
   const dimension = new Array(size).fill(null);
-  const [field, setField] = useState<number[]>(() => createField(size));
 
-  const [mask, setMask] = useState<number[]>(
+  const [die, setDeath] = React.useState(false);
+  const [field, setField] = React.useState<number[]>(() => createField(size));
+  const [mask, setMask] = React.useState<number[]>(
     new Array(size * size).fill(Mask.Filled)
+  );
+
+  const win = React.useMemo(
+    () =>
+      !field.some(
+        (f, i) =>
+          f === MINE && mask[i] !== Mask.Flag && mask[i] !== Mask.Transparent
+      ),
+    [field, mask]
   );
 
   function createField(size: number): number[] {
@@ -59,7 +69,7 @@ function App() {
   }
 
   return (
-    <div>
+    <div style={{ width: "400px", margin: "0 auto" }}>
       {dimension.map((_, y) => {
         return (
           <div key={y} style={{ display: "flex" }}>
@@ -73,7 +83,7 @@ function App() {
                     alignItems: "center",
                     width: "40px",
                     height: "40px",
-                    backgroundColor: "#beb",
+                    backgroundColor: die ? "red" : win ? "#ffb" : "#beb",
                   }}
                   onClick={() => {
                     if (mask[y * size + x] === Mask.Transparent) return;
@@ -101,7 +111,12 @@ function App() {
                       clear(x, y + 1);
                       clear(x, y - 1);
                     }
-
+                    if (field[y * size + x] === MINE) {
+                      mask.forEach((_, i) => {
+                        mask[i] = Mask.Transparent;
+                      });
+                      setDeath(true);
+                    }
                     setMask((prev) => [...prev]);
                   }}
                   onContextMenu={(e) => {
@@ -118,8 +133,10 @@ function App() {
                       mask[y * size + x] = Mask.Filled;
                     }
 
-                    setMask((prev) => [...prev]);
+                    if (field[y * size + x]) {
+                    }
 
+                    setMask((prev) => [...prev]);
                   }}
                 >
                   {mask[y * size + x] !== Mask.Transparent
