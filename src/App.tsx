@@ -61,7 +61,6 @@ function App() {
   return (
     <div>
       {dimension.map((_, y) => {
-
         return (
           <div key={y} style={{ display: "flex" }}>
             {dimension.map((_, x) => {
@@ -79,7 +78,7 @@ function App() {
                   onClick={() => {
                     if (mask[y * size + x] === Mask.Transparent) return;
 
-                    const clearing: [number, number] [] = [];
+                    const clearing: [number, number][] = [];
 
                     function clear(x: number, y: number) {
                       if (x >= 0 && y >= 0 && x < size && y < size) {
@@ -104,6 +103,23 @@ function App() {
                     }
 
                     setMask((prev) => [...prev]);
+                  }}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (mask[y * size + x] === Mask.Transparent) return;
+
+                    if (mask[y * size + x] === Mask.Filled) {
+                      mask[y * size + x] = Mask.Flag;
+                    } else if (mask[y * size + x] === Mask.Flag) {
+                      mask[y * size + x] = Mask.Question;
+                    } else if (mask[y * size + x] === Mask.Question) {
+                      mask[y * size + x] = Mask.Filled;
+                    }
+
+                    setMask((prev) => [...prev]);
+
                   }}
                 >
                   {mask[y * size + x] !== Mask.Transparent
