@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 import "./App.css";
 
 const MINE = -1;
@@ -69,7 +69,7 @@ function App() {
   }
 
   return (
-    <div style={{ width: "400px", margin: "0 auto" }}>
+    <div style={{ width: `1200px`, margin: "0 auto" }}>
       {dimension.map((_, y) => {
         return (
           <div key={y} style={{ display: "flex" }}>
