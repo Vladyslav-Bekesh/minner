@@ -21,8 +21,9 @@ function App() {
   const size = 10;
   const dimension = new Array(size).fill(null);
 
-  const [die, setDeath] = React.useState(false);
+  // eslint-disable-next-line
   const [field, setField] = React.useState<number[]>(() => createField(size));
+  const [die, setDeath] = React.useState(false);
   const [mask, setMask] = React.useState<number[]>(
     new Array(size * size).fill(Mask.Filled)
   );
